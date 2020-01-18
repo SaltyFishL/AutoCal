@@ -164,7 +164,7 @@ class ExpressionBuilder:
 
     def get_ans(self):
         assert isinstance(self.tree, BinaryTree), "表达式树不为BinaryTree"
-        self.tree.cal()
+        self.ans = self.tree.cal()
 
     def build(self, mode):
         self.build_exp_infix(mode)
@@ -175,29 +175,34 @@ class ExpressionBuilder:
         self.tree.adjust_tree(self.tree.root)
 
 
-index = 0
-while index < 1000:
-    builder = ExpressionBuilder()
-    builder.build(Const.Hard)
-    print(builder)
+def main():
+    index = 0
+    while index < 1000:
+        builder = ExpressionBuilder()
+        builder.build(Const.Hard)
+        print(builder)
 
-    # string = ""
-    # for element in builder.exp_elements_suffix:
-    #     if element == Const.RightBracket:
-    #         string += ")"
-    #     elif element == Const.LeftBracket:
-    #         string += "("
-    #     elif element == Const.Plus:
-    #         string += "+"
-    #     elif element == Const.Sub:
-    #         string += "-"
-    #     elif element == Const.Mul:
-    #         string += "*"
-    #     elif element == Const.Div:
-    #         string += "/"
-    #     elif element == Const.Pow:
-    #         string += "**"
-    #     else:
-    #         string += str(element)
-    # print(string)
-    index += 1
+        # string = ""
+        # for element in builder.exp_elements_suffix:
+        #     if element == Const.RightBracket:
+        #         string += ")"
+        #     elif element == Const.LeftBracket:
+        #         string += "("
+        #     elif element == Const.Plus:
+        #         string += "+"
+        #     elif element == Const.Sub:
+        #         string += "-"
+        #     elif element == Const.Mul:
+        #         string += "*"
+        #     elif element == Const.Div:
+        #         string += "/"
+        #     elif element == Const.Pow:
+        #         string += "**"
+        #     else:
+        #         string += str(element)
+        # print(string)
+        index += 1
+
+
+if __name__ == '__main__':
+    main()
