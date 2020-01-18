@@ -38,23 +38,19 @@ def build_exps(max_exp_num, mode):
     ans_file.close()
 
 
-def main():
-    # try:
-    #     max_exp_num = int(input("请输入1000以内需要的题目数量: "))
-    #     mode = int(input("请输入生成题目的类型编号(1.整数四则运算 2.分数四则运算 3.分数带乘方运算): "))
-    #     if mode == 1:
-    #         mode = Const.Easy
-    #     elif mode == 2:
-    #         mode = Const.Medium
-    #     elif mode == 3:
-    #         mode = Const.Hard
-    #     else:
-    #         raise ValueError
-    #     build_exps(max_exp_num, mode)
-    # except ValueError:
-    #     print("输入数字错误")
-    build_exps(1000, Const.Hard)
-
-
-if __name__ == '__main__':
-    main()
+def s_main(max_exp_num, mode):
+    try:
+        max_exp_num = max_exp_num
+        mode = mode
+        if mode == 1:
+            mode = Const.Easy
+        elif mode == 2:
+            mode = Const.Medium
+        elif mode == 3:
+            mode = Const.Hard
+        else:
+            raise ValueError
+        build_exps(max_exp_num, mode)
+    except ValueError:
+        print("输入数字错误")
+    # build_exps(1000, Const.Hard)
