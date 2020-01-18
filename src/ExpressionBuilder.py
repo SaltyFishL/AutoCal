@@ -1,10 +1,39 @@
 import random
 from src.Const import Const
+from src.Stack import Stack
+from src.Num import Num
+from src.BinaryTree import BinaryTree
+from src.BinaryTree import Node
+from src.BinaryTree import cal
 
 
 class ExpressionBuilder:
     def __init__(self):
         self.exp_elements_infix = []
+        self.exp_elements_suffix = []
+        self.tree = None
+        self.ans = None
+
+    def __str__(self):
+        string = ""
+        for element in self.exp_elements_infix:
+            if element == Const.RightBracket:
+                string += ")"
+            elif element == Const.LeftBracket:
+                string += "("
+            elif element == Const.Plus:
+                string += "+"
+            elif element == Const.Sub:
+                string += "-"
+            elif element == Const.Mul:
+                string += "*"
+            elif element == Const.Div:
+                string += "/"
+            elif element == Const.Pow:
+                string += "**"
+            else:
+                string += str(element)
+        return string
 
     @staticmethod
     def __rand_op_num():
@@ -26,7 +55,7 @@ class ExpressionBuilder:
     def __rand_pow_num():
         return random.randint(1, 3)
 
-    def build(self, mode):
+    def build_exp_infix(self, mode):
         """
         为了便于生成表达式, 也为了方便计算, 做出以下规定:
         1. 一个表达式中最多只有一个乘方运算
@@ -88,31 +117,87 @@ class ExpressionBuilder:
                 last_left_bracket += 1
             j += 1
 
-    def __str__(self):
-        string = ""
+    def infix_to_suffix(self):
+        op_stack = Stack()
         for element in self.exp_elements_infix:
-            if element == Const.RightBracket:
-                string += ")"
-            elif element == Const.LeftBracket:
-                string += "("
-            elif element == Const.Plus:
-                string += "+"
-            elif element == Const.Sub:
-                string += "-"
-            elif element == Const.Mul:
-                string += "*"
-            elif element == Const.Div:
-                string += "/"
-            elif element == Const.Pow:
-                string += "**"
+            if element == Const.Pow or element == Const.LeftBracket:
+                # 左括号和乘方必定入栈
+                op_stack.push(element)
+            elif element == Const.Mul or element == Const.Div:
+                # 乘除法需要弹出乘方与乘除
+                while op_stack.size() > 0 and \
+                        (op_stack.peek() == Const.Mul or op_stack.peek() == Const.Div or op_stack.peek() == Const.Pow):
+                    op = op_stack.pop()
+                    self.exp_elements_suffix.append(op)
+                op_stack.push(element)
+            elif element == Const.Plus or element == Const.Sub:
+                while op_stack.size() > 0 and (op_stack.peek() != Const.LeftBracket):
+                    op = op_stack.pop()
+                    self.exp_elements_suffix.append(op)
+                op_stack.push(element)
+            elif element == Const.RightBracket:
+                while op_stack.peek() != Const.LeftBracket:
+                    op = op_stack.pop()
+                    self.exp_elements_suffix.append(op)
+                op_stack.pop()
             else:
-                string += str(element)
-        return string
+                self.exp_elements_suffix.append(element)
+        while op_stack.size() > 0:
+            self.exp_elements_suffix.append(op_stack.pop())
+
+    def suffix_to_tree(self):
+        node_stack = Stack()
+        op_num = 0
+        for elm in self.exp_elements_suffix:
+            node = Node()
+            if elm < Const.Min:
+                node.type = Const.NumNode
+                node.num = Num(elm)
+            else:
+                op_num += 1
+                node.type = Const.OpNode
+                node.right = node_stack.pop()
+                node.left = node_stack.pop()
+                node.op = elm
+            node_stack.push(node)
+        self.tree = BinaryTree(node_stack.pop(), op_num)
+
+    def get_ans(self):
+        assert isinstance(self.tree, BinaryTree), "表达式树不为BinaryTree"
+        self.tree.cal()
+
+    def build(self, mode):
+        self.build_exp_infix(mode)
+        self.infix_to_suffix()
+        self.suffix_to_tree()
+        self.get_ans()
+        assert isinstance(self.tree, BinaryTree)
+        self.tree.adjust_tree(self.tree.root)
 
 
-i = 0
-while i < 1000:
+index = 0
+while index < 1000:
     builder = ExpressionBuilder()
     builder.build(Const.Hard)
     print(builder)
-    i += 1
+
+    # string = ""
+    # for element in builder.exp_elements_suffix:
+    #     if element == Const.RightBracket:
+    #         string += ")"
+    #     elif element == Const.LeftBracket:
+    #         string += "("
+    #     elif element == Const.Plus:
+    #         string += "+"
+    #     elif element == Const.Sub:
+    #         string += "-"
+    #     elif element == Const.Mul:
+    #         string += "*"
+    #     elif element == Const.Div:
+    #         string += "/"
+    #     elif element == Const.Pow:
+    #         string += "**"
+    #     else:
+    #         string += str(element)
+    # print(string)
+    index += 1
