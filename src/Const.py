@@ -1,4 +1,5 @@
 class Const:
+    Min = 0xfffffff3
     LeftBracket = 0xfffffff3
     RightBracket = 0xfffffff4
 
