@@ -25,9 +25,12 @@ def build_exps(max_exp_num, mode):
             exp_file.write(str(i) + ". " + str(builder) + '\n')
             assert isinstance(builder.ans, Num)
             if mode == Const.Easy:
-                ans_file.write(str(i) + ". "
-                               + "{:.2f}".format(builder.ans.numerator / builder.ans.denominator * builder.ans.sign)
-                               + '\n')
+                str_ans = "{:.2f}".format(builder.ans.numerator / builder.ans.denominator * builder.ans.sign)
+                ans_split = str_ans.split(".")
+                if ans_split[1] == "00":
+                    ans_file.write(str(i) + ". " + ans_split[0] + '\n')
+                else:
+                    ans_file.write(str(i) + ". " + str_ans + '\n')
             else:
                 ans_file.write(str(i) + ". ")
                 ans_file.write(str(builder.ans) + '\n')
