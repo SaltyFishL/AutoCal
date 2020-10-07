@@ -42,7 +42,9 @@ class ExpressionBuilder:
     @staticmethod
     def __rand_op(mode):
         """mode为Easy时, 整数加减乘除; mode为Medium时, 加分数; mode为Hard时, 加乘方"""
-        if mode == Const.Easy or mode == Const.Medium:
+        if mode == Const.Easy:
+            return random.randint(Const.Plus, Const.Sub)
+        if mode == Const.Medium:
             return random.randint(Const.Plus, Const.Div)
         if mode == Const.Hard:
             return random.randint(Const.Plus, Const.Pow)
@@ -81,6 +83,9 @@ class ExpressionBuilder:
             if length > 1 and self.exp_elements_infix[length - 2] == Const.Div and self.exp_elements_infix[length - 1] == 0:
                 # 防止除数为0
                 self.exp_elements_infix[length - 1] = 1
+            if length > 1 and self.exp_elements_infix[length - 2] in range(Const.LeftBracket, Const.RightBracket + 1):
+                if random.randint(0, 2) == 0:
+                    self.exp_elements_infix[length - 1] *= -1
             if left_bracket_num > 0 and random.randint(0, 2) == 0 and last_left_bracket > 2:
                 # 1/3的概率可以添加右括号
                 self.exp_elements_infix.append(Const.RightBracket)
